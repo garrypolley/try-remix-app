@@ -13,7 +13,7 @@ export type PostMarkdownAttributes = {
   title: string;
 };
 
-let postsPath = path.join('posts');
+let postsPath = path.join(__dirname, "..", 'posts');
 
 console.log(postsPath);
 
