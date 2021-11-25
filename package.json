@@ -36,5 +36,5 @@
   "sideEffects": false,
   "browser": {
     "fs": false
-}
+  }
 }

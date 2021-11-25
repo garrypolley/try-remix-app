@@ -1,6 +1,6 @@
-import { Link, useLoaderData } from "remix";
-import { getPosts } from "~/post";
-import type { Post } from "~/post";
+import { Link, useLoaderData } from 'remix';
+import { getPosts } from '~/post';
+import type { Post } from '~/post';
 
 export let loader = () => {
   return getPosts();

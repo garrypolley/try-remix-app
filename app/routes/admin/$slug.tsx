@@ -1,39 +1,45 @@
-import { useTransition, useActionData, Form, redirect, useLoaderData } from "remix";
-import type { LoaderFunction } from "remix";
-import { getPost, createPost } from "~/post";
-import type { ActionFunction } from "remix";
-import invariant from "tiny-invariant";
+import {
+  useTransition,
+  useActionData,
+  Form,
+  redirect,
+  useLoaderData
+} from 'remix';
+import type { LoaderFunction } from 'remix';
+import { getPost, createPost } from '~/post';
+import type { ActionFunction } from 'remix';
+import invariant from 'tiny-invariant';
 
 export let loader: LoaderFunction = async ({ params }) => {
-  invariant(params.slug, "expected params.slug");
+  invariant(params.slug, 'expected params.slug');
   return getPost(params.slug);
 };
 
 export let action: ActionFunction = async ({ request }) => {
-  await new Promise(res => setTimeout(res, 1000));
+  await new Promise((res) => setTimeout(res, 1000));
   let formData = await request.formData();
 
-  let title = formData.get("title");
-  let slug = formData.get("slug");
-  let markdown = formData.get("markdown");
+  let title = formData.get('title');
+  let slug = formData.get('slug');
+  let markdown = formData.get('markdown');
 
   let errors: any = {};
   if (!title) errors.title = true;
   if (!slug) errors.slug = true;
   if (!markdown) errors.markdown = true;
 
-  console.log(`Update for: ${JSON.stringify(errors)}`)
+  console.log(`Update for: ${JSON.stringify(errors)}`);
 
   if (Object.keys(errors).length) {
     return errors;
   }
 
-  invariant(typeof title === "string");
-  invariant(typeof slug === "string");
-  invariant(typeof markdown === "string");
+  invariant(typeof title === 'string');
+  invariant(typeof slug === 'string');
+  invariant(typeof markdown === 'string');
   await createPost({ title, slug, markdown });
 
-  return redirect("/admin");
+  return redirect('/admin');
 };
 
 export default function PostSlug() {
@@ -41,34 +47,38 @@ export default function PostSlug() {
   let transition = useTransition();
   let post = useLoaderData();
 
-  console.log("REndering the edit page?")
+  console.log('REndering the edit page?');
 
-  return (<Form method="post">
-    <p>
-      <label>
-        Post Title:{" "}
-        {errors?.title && <em>Title is required</em>}
-        <input type="text" name="title" defaultValue={post.title} />
-      </label>
-    </p>
-    <p>
-      <label>
-        Post Slug:{" "}
-        {errors?.slug && <em>Slug is required</em>}
-        <input type="text" name="slug" defaultValue={post.slug} readOnly={true} />
-      </label>
-    </p>
-    <p>
-      <label htmlFor="markdown">Markdown:</label>{" "}
-      {errors?.markdown && <em>Markdown is required</em>}
-      <br />
-      <textarea rows={20} name="markdown" defaultValue={post.body} />
-    </p>
-    <p>
-      <button type="submit">{transition.submission
-        ? "Updating..."
-        : "Update Post"}</button>
-    </p>
-  </Form>
+  return (
+    <Form method="post">
+      <p>
+        <label>
+          Post Title: {errors?.title && <em>Title is required</em>}
+          <input type="text" name="title" defaultValue={post.title} />
+        </label>
+      </p>
+      <p>
+        <label>
+          Post Slug: {errors?.slug && <em>Slug is required</em>}
+          <input
+            type="text"
+            name="slug"
+            defaultValue={post.slug}
+            readOnly={true}
+          />
+        </label>
+      </p>
+      <p>
+        <label htmlFor="markdown">Markdown:</label>{' '}
+        {errors?.markdown && <em>Markdown is required</em>}
+        <br />
+        <textarea rows={20} name="markdown" defaultValue={post.body} />
+      </p>
+      <p>
+        <button type="submit">
+          {transition.submission ? 'Updating...' : 'Update Post'}
+        </button>
+      </p>
+    </Form>
   );
 }
